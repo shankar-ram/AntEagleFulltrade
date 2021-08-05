@@ -1,0 +1,45 @@
+.footer{
+    margin-left:3rem;
+    margin-right:3rem;
+}
+
+.str-chat{
+    border-radius:1.5rem;
+}
+
+.str-chat__main-panel{
+    margin-top:2.2rem;
+}
+
+.str-chat__header-livestream-left{
+    margin-top:1.2rem;
+}
+
+.rta{
+    padding-right:1rem;
+}
+
+.rfu-file-upload-button{
+    margin-right:2rem;
+}
+.str-chat__virtual-list{
+    overflow-y:hidden;
+}
+.str-chat__small-message-input-emojiselect{
+    margin-bottom:1.1rem;
+    margin-right:1rem;
+}
+
+.str-chat__virtual-message__wrapper{
+   
+    word-break:break-word;
+    
+}
+
+.str-chat__virtual-message__date{
+    width:5rem;
+}
+
+.str-chat__virtual-message__text p{
+    width:50rem;
+}
