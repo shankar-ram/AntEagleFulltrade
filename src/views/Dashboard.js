@@ -5,6 +5,8 @@ import classNames from "classnames";
 // react plugin used to create charts
 import { Line, Bar } from "react-chartjs-2";
 import ChartView from './ChartView';
+import { VerticalTimeline, VerticalTimelineElement }  from 'react-vertical-timeline-component';
+import 'react-vertical-timeline-component/style.min.css';
 // reactstrap components
 import {
   Button,
@@ -65,7 +67,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import swal from "sweetalert";
 import LoadDash from "./load_dash";
 import LoadDashMobile from "./loadDash_mobile";
-
+import cryptologo from './FInalCryptologo.png';
 const Field = ({ label, id, error, ...rest }) => (
   <div>
     <label htmlFor={id}>{label}</label>
@@ -164,11 +166,14 @@ function Dashboard(props) {
   };
   const [quant,setQuant]=React.useState([]);
   const [pricee,setPrice]=React.useState([]);
+  const [finalQuants,setFinalQuants]=React.useState([]);
+  const [finalPrices,setFinalPrices]=React.useState([]);
   const [trade_quantity,settrade_quantity]=React.useState(0);
   const [trade_price,settrade_price]=React.useState(0);
   const [trade_symbol,settrade_symbol]=React.useState(0);
   const [trade_type,settrade_type]=React.useState(0);
   const [sell_quantity,setsell_quantity]=React.useState(0);
+  const [switchtrade,setswitchtrade] = React.useState(true)
   const [sell_price,setsell_price]=React.useState(0);
   const [width,setwidth] = React.useState(window.innerWidth)
   const [isOpen, setIsOpen] = React.useState(false);
@@ -1565,7 +1570,10 @@ onClick={handleShow2}
         </Row>
     </TabPanel>
     <TabPanel>
+    
     <Row > {/* fulltrade */}
+    
+    { switchtrade ?
     <Col className="mr-auto ml-auto" lg="6">
            <Card className="card-chart">
              <CardHeader>
@@ -1577,12 +1585,12 @@ onClick={handleShow2}
              </CardHeader>
              <CardBody>
             
-              <Tabs>
+    
               
               <Form >
    <Label>Quantity</Label>
    <Input  required type="number" step="any" name="quantity"  onChange={(event)=>{
-      const tempQuant=quant;
+      var tempQuant=quant;
       tempQuant.push(event.target.value);
       setQuant(tempQuant);
       // settrade_quantity(parseFloat(event.target.value) )
@@ -1590,7 +1598,7 @@ onClick={handleShow2}
     }}> </Input>
    <Label>Price</Label>
    <Input  type="number" step="any" onChange={(event)=>{
-      const tempPrice=pricee;
+      var tempPrice=pricee;
       tempPrice.push(event.target.value);
       setPrice(tempPrice);
       // settrade_price(parseFloat(event.target.value) )
@@ -1609,40 +1617,31 @@ onClick={handleShow2}
     }}></Input>
   
    <Button type="reset" disabled={!valid_s} onClick={()=>{
-     axios({
-       method:"POST",
-       url:"http://localhost:5000/order",
-       headers:{
-         "Accept": "application/json, text/plain, */*", // It can be used to overcome cors errors
-         "Content-Type": "application/json",
-         Authtoken:"sfsfsff"
-       },
-       data: JSON.stringify({
-        
-        quantity:quant[quant.length-1],  //trade_quantity,
-        price: pricee[pricee.length-1],     //trade_price,
-        pair:trade_symbol,
-        type:trade_type,
-        mode:"buy"
-
-       }),
-      
-     }).then(res=>{console.log(res.data);
-     localStorage.setItem("assigned_no",res.data.assigned_no)
-     localStorage.setItem("order_id",res.data.order_id)
-     localStorage.setItem("purchased_quantity",res.data.purchased_quantity)
-     })
-     setQuant([])
-     setPrice([])
+    
+     console.log(quant,pricee)
+     
+    const tempQ=finalQuants;
+    tempQ.push(quant[quant.length-1])
+    const tempP=finalPrices;
+    tempP.push(pricee[pricee.length-1])
+    localStorage.setItem("purchased_quantity",parseFloat(quant[quant.length-1]))
+    setFinalQuants(tempQ)
+    setFinalPrices(tempP)
+    setQuant([])
+    setPrice([])
+     console.log("final quant is",finalQuants,"final price is",finalPrices);
+    
+     setswitchtrade(false)
+     
    }}>Submit</Button>
    </Form>
    
 
-   </Tabs>
+   
               </CardBody>
             </Card>
           </Col>
-
+      :
           <Col className="mr-auto ml-auto" lg="6">
            <Card className="card-chart">
              <CardHeader>
@@ -1658,11 +1657,19 @@ onClick={handleShow2}
               
               <Form >
    <Label>Selling Quantity</Label>
-   <Input  required type="number" step="any" name="quantity" onChange={(event)=>{
-      if(parseFloat(localStorage.getItem("purchased_quantity"))-event.target.value <0 )
+   <Input  required type="number" step="any" name="quantity_sell" onChange={(event)=>{
+      if(parseFloat(finalPrices[0])-parseFloat(event.target.value) < 0 )
         alert("Cannot sell more than you buy");
+      else if(parseFloat(localStorage.getItem("purchased_quantity"))-parseFloat(event.target.value)<0){
+        alert(`Only ${parseFloat(localStorage.getItem("purchased_quantity"))-parseFloat(event.target.value)} Left to sell`)
+      }
       else{
-        localStorage.setItem("purchased_quantity",parseFloat(localStorage.getItem("purchased_quantity"))-event.target.value)
+        if(finalPrices.length == 1){
+          localStorage.setItem("purchased_quantity",parseFloat(finalPrices[0])-parseFloat(event.target.value))
+        }
+        else{
+        localStorage.setItem("purchased_quantity",parseFloat(localStorage.getItem("purchased_quantity"))-parseFloat(event.target.value))
+        }
         const tempQuant=quant;
         tempQuant.push(event.target.value)
         setQuant(tempQuant)
@@ -1671,7 +1678,7 @@ onClick={handleShow2}
 
     }}> </Input>
    <Label>Selling Price</Label>
-   <Input  type="number" step="any" name="price" onChange={(event)=>{
+   <Input  type="number" step="any" name="price_sell" onChange={(event)=>{
       const tempPrice=pricee;
       tempPrice.push(event.target.value)
       setPrice(tempPrice)
@@ -1683,7 +1690,54 @@ onClick={handleShow2}
     
      
    <Button type="reset" disabled={!valid_s} onClick={()=>{
-     axios({
+   
+    const tempQ=finalQuants;
+    tempQ.push(quant[quant.length-1])
+    const tempP=finalPrices;
+    tempP.push(pricee[pricee.length-1])
+    setFinalQuants(tempQ)
+    setFinalPrices(tempP)
+     console.log("final quant is",finalQuants,"final price is",finalPrices);
+    
+   }}>Continue Selling</Button>
+
+<Button type="reset" disabled={!valid_s} onClick={()=>{
+    const tempQ=finalQuants;
+    tempQ.push(quant[quant.length-1])
+    const tempP=finalPrices;
+    tempP.push(pricee[pricee.length-1])
+    setFinalQuants(tempQ)
+    setFinalPrices(tempP)
+    setQuant([])
+    setPrice([])
+     console.log("final quant is",finalQuants,"final price is",finalPrices);
+     setswitchtrade(true)
+
+   axios({
+       method:"POST",
+       url:"https://api.anteagle.tech/order",
+       headers:{
+         "Accept": "application/json, text/plain, */*", // It can be used to overcome cors errors
+         "Content-Type": "application/json",
+         Authtoken:"sfsfsff"
+       },
+       data: JSON.stringify({
+        
+        quantity:finalQuants[0],   //quant[quant.length-1],  //trade_quantity,
+        price: finalPrices[0],      //pricee[pricee.length-1],     //trade_price,
+        pair:trade_symbol,
+        type:trade_type,
+        mode:"buy"
+
+       }),
+      
+     }).then(res=>{console.log(res.data);
+     localStorage.setItem("assigned_no",res.data.assigned_no)
+     localStorage.setItem("order_id",res.data.order_id)
+     localStorage.setItem("purchased_quantity",res.data.purchased_quantity)
+     })
+     for(var i=1;i<finalQuants.length-1;i++){
+      axios({
        method:"POST",
        url:"http://localhost:5000/fulltrade",
        headers:{
@@ -1692,8 +1746,8 @@ onClick={handleShow2}
          Authtoken:"sfsfsff"
        },
        data: JSON.stringify({
-          quantity:quant[quant.length-1], //sell_quantity,
-          price: pricee[pricee.length-1],//sell_price,
+          quantity: finalQuants[i],  //quant[quant.length-1], //sell_quantity,
+          price:  finalPrices[i],  //</Form>pricee[pricee.length-1],//sell_price,
           pair:trade_symbol,
           type:trade_type,
           mode:"sell",
@@ -1703,11 +1757,7 @@ onClick={handleShow2}
 
        }),
      }).then(res=>{console.log(res.data)})
-
-    
-   }}>Continue Selling</Button>
-
-<Button type="reset" disabled={!valid_s} onClick={()=>{
+     }
      axios({
        method:"POST",
        url:"http://localhost:5000/submitorder",
@@ -1717,8 +1767,8 @@ onClick={handleShow2}
          Authtoken:"sfsfsff"
        },
        data: JSON.stringify({
-          quantity:quant[quant.length-1], //sell_quantity,
-          price: pricee[pricee.length-1],//sell_price,
+          quantity:finalQuants[finalQuants.length-1],  //quant[quant.length-1], //sell_quantity,
+          price:  finalPrices[finalPrices.length-1], //Form>pricee[pricee.length-1],//sell_price,
           pair:trade_symbol,
           type:trade_type,
           mode:"sell",
@@ -1726,21 +1776,58 @@ onClick={handleShow2}
           purchased_quantity:localStorage.getItem("purchased_quantity")
 
        }),
-     }).then(res=>{console.log(res.data)})
-    
-    
+     }).then(res=>{console.log(res.data)
+     setswitchtrade(true)
+     })
+
+  
    }}>Submit</Button>
    </Form>
    
 
 </Tabs>
+    
+
            </CardBody>
          </Card>
        </Col>
+    }
+    <Col lg="6" md="12">
+            <Card className="card-tasks" style={{overflow:"auto"}}>
+              <CardHeader>
+             <h3> Transactions</h3>
+              </CardHeader>
+              <CardBody>
+   
+              <VerticalTimeline layout={'1-column-left'} >
+                { finalPrices.map((ans,i)=>{
+                  return(
+                    <VerticalTimelineElement  
+                    contentStyle={{ background: '#1d8cf8', color: '#fff', width:'40%',height:"20%" }} 
+                    contentArrowStyle={{ borderRight: '15px solid  #1d8cf8' }} 
+                    
+      >
+                    
+                        <h1 >Buy</h1>
+                        <p>Price:{ans}</p>
+                        <p>Quantity:{finalQuants[i]}</p>
+                    </VerticalTimelineElement>
+                  )
+                  })
+                }
+              </VerticalTimeline>
+               
+              </CardBody>
+            </Card>
+          </Col>
    </Row>  {/*fulltrade */} 
+   
    </TabPanel>
+
 </Tabs>  
-</Row>   
+
+</Row> 
+  
         <Row>
           <Col lg="6" md="12">
             <Card className="card-tasks">

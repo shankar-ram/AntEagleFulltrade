@@ -1335,20 +1335,7 @@
   resolved "https://registry.npmjs.org/@emotion/memoize/-/memoize-0.7.5.tgz"
   integrity sha512-igX9a37DR2ZPGYtV6suZ6whr8pTFtyHL3K/oLUotxpSVO2ASaprmAe2Dkq7tBo7CRY7MMDrAa9nuQP9/YG8FxQ==
 
-"@emotion/react@^11.1.4":
-  version "11.4.0"
-  resolved "https://registry.npmjs.org/@emotion/react/-/react-11.4.0.tgz"
-  integrity sha512-4XklWsl9BdtatLoJpSjusXhpKv9YVteYKh9hPKP1Sxl+mswEFoUe0WtmtWjxEjkA51DQ2QRMCNOvKcSlCQ7ivg==
-  dependencies:
-    "@babel/runtime" "^7.13.10"
-    "@emotion/cache" "^11.4.0"
-    "@emotion/serialize" "^1.0.2"
-    "@emotion/sheet" "^1.0.1"
-    "@emotion/utils" "^1.0.0"
-    "@emotion/weak-memoize" "^0.2.5"
-    hoist-non-react-statics "^3.3.1"
-
-"@emotion/react@^11.4.0":
+"@emotion/react@^11.1.4", "@emotion/react@^11.4.0":
   version "11.4.0"
   resolved "https://registry.yarnpkg.com/@emotion/react/-/react-11.4.0.tgz#2465ad7b073a691409b88dfd96dc17097ddad9b7"
   integrity sha512-4XklWsl9BdtatLoJpSjusXhpKv9YVteYKh9hPKP1Sxl+mswEFoUe0WtmtWjxEjkA51DQ2QRMCNOvKcSlCQ7ivg==
@@ -13209,6 +13196,11 @@ react-images@^1.1.7:
     react-transition-group "^2.9.0"
     react-view-pager "^0.6.0"
 
+react-intersection-observer@^8.26.2:
+  version "8.32.0"
+  resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-8.32.0.tgz#47249332e12e8bb99ed35a10bb7dd10446445a7b"
+  integrity sha512-RlC6FvS3MFShxTn4FHAy904bVjX5Nn4/eTjUkurW0fHK+M/fyQdXuyCy9+L7yjA+YMGogzzSJNc7M4UtfSKvtw==
+
 react-is@^16.12.0, react-is@^16.3.2, react-is@^16.6.0, react-is@^16.6.3, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.6:
   version "16.13.1"
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
@@ -13623,6 +13615,15 @@ react-transition-group@^4, react-transition-group@^4.4.0, react-transition-group
     dom-helpers "^5.0.1"
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
+
+react-vertical-timeline-component@^3.3.3:
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/react-vertical-timeline-component/-/react-vertical-timeline-component-3.3.3.tgz#0c87e92be0af11ea895743f267be0e07e941e8e1"
+  integrity sha512-zvztiWKFYYPqq0vDrWoBcLJC6ok5A4nvdgxHq94JKVyjwUypojGHZQxDSjDzmLkgLRrA2kVjNzfNnv6eQ/O80A==
+  dependencies:
+    classnames "^2.2.6"
+    prop-types "^15.7.2"
+    react-intersection-observer "^8.26.2"
 
 react-view-pager@^0.6.0:
   version "0.6.0"
